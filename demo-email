@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+ 
+    stages {
+        stage('Example Stage') {
+            steps {
+                echo 'Doing something...'
+            }
+        }
+    }
+ 
+    post {
+        always {
+            emailext (
+                to: 'recipient@example.com',
+                subject: "Build ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                body: """
+                    Build ${currentBuild.fullDisplayName} (${env.BUILD_URL}) completed.
+                    Result: ${currentBuild.result}
+                """,
+                mimeType: 'text/html'
+            )
+        }
+    }
+}
